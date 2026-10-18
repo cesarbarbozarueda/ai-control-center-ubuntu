@@ -1,0 +1,15 @@
+[Unit]
+Description=AI Control Center local dashboard
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/ai-control-center
+ExecStart=%h/.local/share/ai-control-center/.venv/bin/python %h/.local/share/ai-control-center/app.py
+Restart=on-failure
+RestartSec=3
+Environment=PYTHONUNBUFFERED=1
+Environment=COMFYUI_DIR=%h/Documents/IA/IA_VIDEOS/ComfyUI
+
+[Install]
+WantedBy=default.target

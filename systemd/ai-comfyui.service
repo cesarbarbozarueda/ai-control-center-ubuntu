@@ -1,0 +1,13 @@
+[Unit]
+Description=ComfyUI local image generation server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Documents/IA/IA_VIDEOS/ComfyUI
+ExecStart=%h/Documents/IA/IA_VIDEOS/ComfyUI/venv/bin/python %h/Documents/IA/IA_VIDEOS/ComfyUI/main.py --listen 127.0.0.1 --port 8188
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Control Center</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">✳</div><div><b>AI CONTROL</b><small>CENTRO DE CONTROL LOCAL</small></div></div>
+    <nav><a class="active" href="#overview">◈ <span>Resumen</span></a><a href="#services">▦ <span>Servicios</span></a><a href="#models">◉ <span>Modelos Ollama</span></a><a href="#system">⌁ <span>Recursos</span></a></nav>
+    <div class="sidebar-bottom"><span class="live-dot"></span> Solo en este equipo<small>127.0.0.1 · privado</small></div>
+  </aside>
+  <main>
+    <header><div><p class="eyebrow">LOCAL AI / UBUNTU</p><h1>Centro de control</h1><p class="sub">Administrá tus servicios y vigilá el consumo de recursos.</p></div><button class="refresh" onclick="refreshAll()">↻ Actualizar</button></header>
+    <section id="overview" class="stats">
+      <article class="stat"><div class="stat-top"><span>Servicios activos</span><span class="stat-icon cyan">◈</span></div><strong id="activeCount">—</strong><small>de <span id="serviceCount">—</span> configurados</small></article>
+      <article class="stat"><div class="stat-top"><span>CPU</span><span class="stat-icon violet">⌁</span></div><strong id="cpu">—</strong><div class="meter"><i id="cpuBar"></i></div></article>
+      <article class="stat"><div class="stat-top"><span>Memoria RAM</span><span class="stat-icon blue">▤</span></div><strong id="ram">—</strong><div class="meter"><i id="ramBar"></i></div><small id="ramDetail">Esperando datos</small></article>
+      <article class="stat"><div class="stat-top"><span>GPU NVIDIA</span><span class="stat-icon green">▧</span></div><strong id="gpu">—</strong><div class="meter"><i id="gpuBar"></i></div><small id="gpuDetail">Esperando datos</small></article>
+    </section>
+    <section id="services" class="section">
+      <div class="section-head"><div><h2>Servicios</h2><p>Estado real y controles de ejecución</p></div><span class="pill" id="lastUpdated">Actualizando…</span></div>
+      <div class="service-grid" id="serviceGrid"></div>
+    </section>
+    <section id="models" class="section">
+      <div class="section-head"><div><h2>Modelos en memoria</h2><p>Modelos actualmente cargados por Ollama</p></div></div>
+      <div id="modelsBox" class="models-box"><div class="empty">Consultando API de Ollama…</div></div>
+      <p class="hint">Descargar un modelo de memoria no borra el archivo del disco. Si un modelo está siendo utilizado por una conversación, esperá a que termine antes de descargarlo.</p>
+    </section>
+    <section id="system" class="section">
+      <div class="section-head"><div><h2>Recursos del sistema</h2><p>Lecturas actuales de CPU, RAM y GPU</p></div></div>
+      <div class="resource-panel"><div class="resource-row"><span>Procesador</span><div class="wide-meter"><i id="cpuBar2"></i></div><b id="cpu2">—</b></div><div class="resource-row"><span>Memoria RAM</span><div class="wide-meter"><i id="ramBar2"></i></div><b id="ram2">—</b></div><div class="resource-row"><span>GPU</span><div class="wide-meter"><i id="gpuBar2"></i></div><b id="gpu2">—</b></div><div id="gpuError" class="hint"></div></div>
+    </section>
+    <footer><span>AI Control Center</span><span>Actualización automática cada 5 segundos</span></footer>
+  </main>
+</div>
+<div id="toast" class="toast" role="status"></div>
+<script src="/static/app.js"></script>
+</body></html>
