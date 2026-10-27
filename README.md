@@ -4,6 +4,19 @@ Panel local para administrar y actualizar tus IAs locales. Reconoce 19 (Ollama, 
 
 Desarrollado por [devcibr](https://www.devcibr.com).
 
+![Panel de AI Control Center en modo oscuro](docs/capturas/01-panel-oscuro.png)
+
+## Capturas
+
+| | |
+|---|---|
+| ![Tarjetas de cada IA con iniciar, detener, actualizar e inicio automático](docs/capturas/02-servicios.png) | ![Modo claro](docs/capturas/03-panel-claro.png) |
+| **Cada IA en su tarjeta:** estado, consumo, inicio automático y botón Actualizar | **Modo claro** con los dos cuadrados de arriba a la derecha |
+| ![Ventana para actualizar una IA](docs/capturas/04-actualizar.png) | ![Ventana para agregar una IA personalizada](docs/capturas/05-agregar-ia.png) |
+| **Actualizar** con un clic, viendo la versión instalada y la nueva | **Agregar IA** que no está en la lista |
+| ![Panel de configuración visual](docs/capturas/06-configuracion.png) | ![Ventana de donaciones con QR de Binance Pay](docs/capturas/07-donar.png) |
+| **Configuración** de colores, tamaño, densidad y más | **Donar** con Binance Pay |
+
 ## Funciones
 
 - **Detección automática** de cada IA: servicio del sistema, contenedor Docker, ejecutable en el PATH, carpeta (se busca en las rutas típicas y en tu carpeta personal) o app de escritorio (AppImage, Flatpak o .deb). Las que no se encuentran quedan en una lista plegable "No detectadas".
