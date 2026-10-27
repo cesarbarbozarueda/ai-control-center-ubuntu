@@ -1,57 +1,19 @@
 #!/usr/bin/env bash
+# Build the .deb from this repository and install it (asks for your sudo password).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEST="$HOME/.local/share/ai-control-center"
-UNITDIR="$HOME/.config/systemd/user"
-mkdir -p "$DEST" "$UNITDIR" "$HOME/.local/bin"
-cp -r "$ROOT/app.py" "$ROOT/requirements.txt" "$ROOT/templates" "$ROOT/static" "$DEST/"
-python3 -m venv "$DEST/.venv"
-"$DEST/.venv/bin/pip" install --upgrade pip
-"$DEST/.venv/bin/pip" install -r "$DEST/requirements.txt"
-sed "s|%h/.local/share/ai-control-center|$DEST|g" "$ROOT/systemd/ai-control-center.service" > "$UNITDIR/ai-control-center.service"
-# Create the ComfyUI user service only if its expected entry point exists.
-COMFY="$HOME/Documents/IA/IA_VIDEOS/ComfyUI"
-if [[ -f "$COMFY/main.py" && -x "$COMFY/venv/bin/python" ]]; then
-  sed "s|%h/Documents/IA/IA_VIDEOS/ComfyUI|$COMFY|g" "$ROOT/systemd/ai-comfyui.service" > "$UNITDIR/ai-comfyui.service"
-  echo "ComfyUI service installed."
-else
-  echo "ComfyUI service not installed: expected main.py and venv/bin/python in $COMFY"
-  echo "Edit ~/.config/systemd/user/ai-comfyui.service if your installation uses another path or environment."
+VERSION="$(sed -n 's/^VERSION = "\(.*\)"/\1/p' "$ROOT/app.py")"
+
+# Old versions (v1) ran the panel as a systemd user service; stop it so the port is free.
+if [[ -f "$HOME/.config/systemd/user/ai-control-center.service" ]]; then
+  systemctl --user disable --now ai-control-center.service 2>/dev/null || true
+  rm -f "$HOME/.config/systemd/user/ai-control-center.service"
+  systemctl --user daemon-reload || true
+  echo "Se quitó el servicio de la versión anterior. La copia vieja en ~/.local/share/ai-control-center ya no se usa; podés borrarla."
 fi
 
-# Grant only exact Ollama systemd actions; no general shell access.
-SUDOERS="/etc/sudoers.d/ai-control-center"
-TMP="$(mktemp)"
-printf '%s ALL=(root) NOPASSWD: /usr/bin/systemctl start ollama.service, /usr/bin/systemctl stop ollama.service, /usr/bin/systemctl restart ollama.service\n' "$USER" > "$TMP"
-chmod 0440 "$TMP"
-if command -v visudo >/dev/null 2>&1; then
-  if sudo visudo -cf "$TMP" >/dev/null; then
-    sudo install -o root -g root -m 0440 "$TMP" "$SUDOERS"
-    echo "Permisos limitados para administrar Ollama configurados."
-  else
-    echo "No se pudo validar la regla sudoers; no se instaló." >&2
-  fi
-fi
-rm -f "$TMP"
-
-systemctl --user daemon-reload
-systemctl --user enable --now ai-control-center.service
-
-# Start the dashboard server at login and open it in the default browser.
-AUTOSTART="$HOME/.config/autostart"
-mkdir -p "$AUTOSTART"
-cat > "$AUTOSTART/ai-control-center.desktop" <<'DESKTOP'
-[Desktop Entry]
-Type=Application
-Name=AI Control Center
-Comment=Abrir el panel local de control de IA
-Exec=sh -c 'sleep 3; xdg-open http://127.0.0.1:8765'
-Terminal=false
-X-GNOME-Autostart-enabled=true
-DESKTOP
-
-echo
-echo "Instalación terminada."
-echo "Abrí: http://127.0.0.1:8765"
-echo "Para ver logs: journalctl --user -u ai-control-center -f"
-echo "Para desinstalar, consultá README.md; tus modelos y datos no se tocan."
+bash "$ROOT/packaging/build-deb.sh"
+sudo apt-get install -y "$ROOT/dist/ai-control-center_${VERSION}_all.deb"
+pkill -f "/usr/lib/ai-control-center/app.py --server" 2>/dev/null || true
+ai-control-center
+echo "Listo. También podés abrirlo desde el menú de aplicaciones: AI Control Center."

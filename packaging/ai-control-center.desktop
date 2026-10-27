@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=AI Control Center
+GenericName=Panel de IA local
+Comment=Administrá tus IAs locales: Ollama, Open WebUI, Immich y ComfyUI
+Exec=ai-control-center
+Icon=ai-control-center
+Terminal=false
+Categories=Utility;System;Monitor;
+Keywords=AI;IA;Ollama;ComfyUI;Immich;LLM;Docker;
+StartupNotify=false

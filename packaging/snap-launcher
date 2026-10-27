@@ -1,0 +1,4 @@
+#!/bin/sh
+# Entry point of the snap: run the panel with the Python bundled in the snap.
+export PYTHONDONTWRITEBYTECODE=1
+exec "$SNAP/bin/python3" "$SNAP/usr/lib/ai-control-center/app.py" "$@"

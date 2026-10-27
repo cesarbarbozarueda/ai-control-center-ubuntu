@@ -1,0 +1,61 @@
+#!/usr/bin/python3
+"""Root helper run through pkexec (asks for the admin password) to remove Ollama.
+
+Mirrors the official Ollama uninstall steps for Linux. Only fixed paths are
+touched, and files that belong to an apt package are left for apt to remove.
+
+Usage: aicc-uninstall-helper ollama [--data]
+"""
+import os
+import shutil
+import subprocess
+import sys
+
+UNIT_FILES = ["/etc/systemd/system/ollama.service"]
+BINARIES = ["/usr/local/bin/ollama", "/usr/bin/ollama"]
+LIB_DIRS = ["/usr/local/lib/ollama", "/usr/lib/ollama"]
+DATA_DIR = "/usr/share/ollama"
+
+
+def owned_by_package(path):
+    return subprocess.call(["dpkg", "-S", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+
+
+def remove(path, errors):
+    if not os.path.lexists(path):
+        return
+    if owned_by_package(path):
+        errors.append("{} pertenece a un paquete apt; quitalo con apt.".format(path))
+        return
+    try:
+        if os.path.isdir(path) and not os.path.islink(path):
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+        print("borrado " + path)
+    except OSError as e:
+        errors.append("{}: {}".format(path, e))
+
+
+def main():
+    if len(sys.argv) < 2 or sys.argv[1] != "ollama" or any(a != "--data" for a in sys.argv[2:]):
+        print("uso: aicc-uninstall-helper ollama [--data]", file=sys.stderr)
+        return 2
+    systemctl = shutil.which("systemctl") or "/bin/systemctl"
+    subprocess.call([systemctl, "disable", "--now", "ollama.service"],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    errors = []
+    for p in UNIT_FILES + BINARIES + LIB_DIRS:
+        remove(p, errors)
+    subprocess.call([systemctl, "daemon-reload"])
+    if "--data" in sys.argv[2:]:
+        remove(DATA_DIR, errors)
+        for cmd in (["userdel", "ollama"], ["groupdel", "ollama"]):
+            subprocess.call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for e in errors:
+        print(e, file=sys.stderr)
+    return 1 if errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Launcher installed to /usr/bin by the .deb package.
+export PYTHONDONTWRITEBYTECODE=1
+exec /usr/bin/python3 /usr/lib/ai-control-center/app.py "$@"

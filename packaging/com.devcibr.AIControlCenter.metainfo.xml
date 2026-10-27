@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.devcibr.AIControlCenter</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>AI Control Center</name>
+  <summary>Administrá tus IAs locales / Manage your local AI tools</summary>
+  <developer id="com.devcibr">
+    <name>devcibr</name>
+  </developer>
+  <developer_name>devcibr</developer_name>
+  <url type="homepage">https://www.devcibr.com</url>
+  <url type="contact">https://www.devcibr.com</url>
+  <url type="vcs-browser">https://github.com/cesarbarbozarueda/ai-control-center-ubuntu</url>
+  <launchable type="desktop-id">com.devcibr.AIControlCenter.desktop</launchable>
+  <description>
+    <p>AI Control Center es un panel de escritorio para administrar tus herramientas de inteligencia artificial locales en Ubuntu: Ollama, Open WebUI, Immich, ComfyUI, LM Studio, Jan, GPT4All, LocalAI, Stable Diffusion WebUI, InvokeAI, SillyTavern, n8n, Flowise y más.</p>
+    <ul>
+      <li>Detecta automáticamente dónde está instalada cada IA, o te deja indicar la ruta a mano.</li>
+      <li>Iniciá, detené y reiniciá cada servicio con un clic.</li>
+      <li>Actualizá cada IA con un botón y recibí un aviso cuando hay una versión nueva.</li>
+      <li>Agregá cualquier otra IA local indicando su carpeta y comando o su contenedor Docker.</li>
+      <li>Elegí qué IAs se inician solas al iniciar sesión.</li>
+      <li>Desinstalá una IA por completo, eligiendo si también borrás modelos y datos.</li>
+      <li>Mirá el uso de CPU, RAM y GPU NVIDIA, global y por servicio.</li>
+      <li>Tema claro u oscuro y apariencia personalizable.</li>
+    </ul>
+    <p>Todo funciona en tu equipo: el panel solo escucha en 127.0.0.1. Desarrollado por devcibr (www.devcibr.com).</p>
+    <p>AI Control Center is a desktop panel to manage your local artificial intelligence tools on Ubuntu: Ollama, Open WebUI, Immich, ComfyUI, LM Studio, Jan, GPT4All, LocalAI, Stable Diffusion WebUI, InvokeAI, SillyTavern, n8n, Flowise and more.</p>
+    <ul>
+      <li>Automatically finds where each AI tool is installed, or lets you set the path by hand.</li>
+      <li>Start, stop and restart each service with one click.</li>
+      <li>Update each AI tool with one button and get notified when a new version is out.</li>
+      <li>Add any other local AI tool by giving its folder and command or its Docker container.</li>
+      <li>Choose which AI tools start automatically when you log in.</li>
+      <li>Fully uninstall an AI tool, choosing whether to also delete models and data.</li>
+      <li>See CPU, RAM and NVIDIA GPU usage, overall and per service.</li>
+      <li>Light or dark theme and a customizable look.</li>
+    </ul>
+    <p>Everything runs on your computer: the panel only listens on 127.0.0.1. Developed by devcibr (www.devcibr.com).</p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Panel principal / Main panel</caption>
+      <image>https://raw.githubusercontent.com/cesarbarbozarueda/ai-control-center-ubuntu/main/packaging/store/screenshot-1-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Tema claro / Light theme</caption>
+      <image>https://raw.githubusercontent.com/cesarbarbozarueda/ai-control-center-ubuntu/main/packaging/store/screenshot-2-light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Configuración visual / Appearance settings</caption>
+      <image>https://raw.githubusercontent.com/cesarbarbozarueda/ai-control-center-ubuntu/main/packaging/store/screenshot-3-settings.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Desinstalación completa / Full uninstall</caption>
+      <image>https://raw.githubusercontent.com/cesarbarbozarueda/ai-control-center-ubuntu/main/packaging/store/screenshot-4-uninstall.png</image>
+    </screenshot>
+  </screenshots>
+  <categories>
+    <category>Utility</category>
+    <category>System</category>
+  </categories>
+  <keywords>
+    <keyword>AI</keyword>
+    <keyword>IA</keyword>
+    <keyword>Ollama</keyword>
+    <keyword>ComfyUI</keyword>
+    <keyword>Immich</keyword>
+    <keyword>LLM</keyword>
+  </keywords>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="2.0.0" date="2026-10-27">
+      <description>
+        <p>Ventana propia, detección de 19 IAs y de IAs personalizadas, botón Actualizar con aviso de nuevas versiones, inicio automático por IA, desinstalación completa, tema claro y oscuro y panel de configuración.</p>
+        <p>Own window, detection of 19 AI tools plus custom ones, Update button with new-version notices, per-tool autostart, full uninstall, light and dark theme and settings panel.</p>
+      </description>
+    </release>
+  </releases>
+</component>

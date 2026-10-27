@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+  <vendor>AI Control Center</vendor>
+  <action id="io.github.aicontrolcenter.service">
+    <description>Start, stop or toggle autostart of local AI system services</description>
+    <description xml:lang="es">Iniciar, detener o configurar el inicio automático de servicios de IA del sistema</description>
+    <message>Authentication is required to control a local AI service</message>
+    <message xml:lang="es">Se necesita autorización para controlar un servicio de IA</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/ai-control-center/helpers/aicc-service-helper</annotate>
+  </action>
+  <action id="io.github.aicontrolcenter.uninstall">
+    <description>Uninstall a local AI system service</description>
+    <description xml:lang="es">Desinstalar un servicio de IA del sistema</description>
+    <message>Authentication is required to uninstall a local AI service</message>
+    <message xml:lang="es">Se necesita la contraseña de administrador para desinstalar</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/ai-control-center/helpers/aicc-uninstall-helper</annotate>
+  </action>
+  <action id="io.github.aicontrolcenter.update">
+    <description>Update a local AI system service</description>
+    <description xml:lang="es">Actualizar un servicio de IA del sistema</description>
+    <message>Authentication is required to update a local AI service</message>
+    <message xml:lang="es">Se necesita la contraseña de administrador para actualizar</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/ai-control-center/helpers/aicc-update-helper</annotate>
+  </action>
+</policyconfig>

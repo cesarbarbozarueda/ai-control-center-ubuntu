@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=AI Control Center
+GenericName=Panel de IA local
+GenericName[en]=Local AI panel
+Comment=Administrá, actualizá e iniciá tus IAs locales
+Comment[en]=Manage, update and start your local AI tools
+Exec=ai-control-center
+Icon=ai-control-center
+Terminal=false
+Categories=System;Monitor;
+Keywords=AI;IA;Ollama;ComfyUI;Immich;LLM;Docker;
+StartupNotify=true
+StartupWMClass=ai-control-center

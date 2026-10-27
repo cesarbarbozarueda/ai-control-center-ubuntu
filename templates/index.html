@@ -2,27 +2,54 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="aicc-token" content="{{ token }}">
   <title>AI Control Center</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css?v={{ version }}">
+  <script>
+    // Apply saved look before the first paint to avoid a flash of the wrong theme.
+    try{var s=JSON.parse(localStorage.getItem('aicc-ui')||'{}');var t=s.theme||'auto';
+      if(t==='auto')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+      document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='dark';}
+  </script>
 </head>
 <body>
 <div class="shell">
   <aside class="sidebar">
     <div class="brand"><div class="brand-icon">✳</div><div><b>AI CONTROL</b><small>CENTRO DE CONTROL LOCAL</small></div></div>
-    <nav><a class="active" href="#overview">◈ <span>Resumen</span></a><a href="#services">▦ <span>Servicios</span></a><a href="#models">◉ <span>Modelos Ollama</span></a><a href="#system">⌁ <span>Recursos</span></a></nav>
-    <div class="sidebar-bottom"><span class="live-dot"></span> Solo en este equipo<small>127.0.0.1 · privado</small></div>
+    <nav><a class="active" href="#overview">◈ <span>Resumen</span></a><a href="#services">▦ <span>Servicios</span></a><a href="#models">◉ <span>Modelos Ollama</span></a><a href="#system">⌁ <span>Recursos</span></a><a href="#" onclick="openSettings();return false">⚙ <span>Configuración</span></a></nav>
+    <div class="sidebar-bottom"><span class="live-dot"></span> Solo en este equipo<small>127.0.0.1 · privado · v{{ version }}</small></div>
   </aside>
   <main>
-    <header><div><p class="eyebrow">LOCAL AI / UBUNTU</p><h1>Centro de control</h1><p class="sub">Administrá tus servicios y vigilá el consumo de recursos.</p></div><button class="refresh" onclick="refreshAll()">↻ Actualizar</button></header>
+    <header>
+      <div><p class="eyebrow">LOCAL AI / UBUNTU</p><h1>Centro de control</h1><p class="sub">Administrá tus servicios y vigilá el consumo de recursos.</p></div>
+      <div class="header-tools">
+        {% if donate %}<button class="refresh donate" onclick="openDonate()" title="Apoyá el proyecto">♥ Donar</button>{% endif %}
+        <button class="refresh" onclick="refreshAll()">↻ Actualizar</button>
+        <button class="icon-btn" onclick="openSettings()" title="Configuración" aria-label="Configuración">⚙</button>
+        <div class="theme-switch" role="group" aria-label="Tema">
+          <button class="sq sq-light" data-set-theme="light" title="Modo claro" aria-label="Modo claro"></button>
+          <button class="sq sq-dark" data-set-theme="dark" title="Modo oscuro" aria-label="Modo oscuro"></button>
+        </div>
+      </div>
+    </header>
     <section id="overview" class="stats">
-      <article class="stat"><div class="stat-top"><span>Servicios activos</span><span class="stat-icon cyan">◈</span></div><strong id="activeCount">—</strong><small>de <span id="serviceCount">—</span> configurados</small></article>
-      <article class="stat"><div class="stat-top"><span>CPU</span><span class="stat-icon violet">⌁</span></div><strong id="cpu">—</strong><div class="meter"><i id="cpuBar"></i></div></article>
-      <article class="stat"><div class="stat-top"><span>Memoria RAM</span><span class="stat-icon blue">▤</span></div><strong id="ram">—</strong><div class="meter"><i id="ramBar"></i></div><small id="ramDetail">Esperando datos</small></article>
-      <article class="stat"><div class="stat-top"><span>GPU NVIDIA</span><span class="stat-icon green">▧</span></div><strong id="gpu">—</strong><div class="meter"><i id="gpuBar"></i></div><small id="gpuDetail">Esperando datos</small></article>
+      <article class="stat"><div class="stat-top"><span>Servicios activos</span><span class="stat-icon c1">◈</span></div><strong id="activeCount">—</strong><small>de <span id="serviceCount">—</span> detectados</small></article>
+      <article class="stat"><div class="stat-top"><span>CPU</span><span class="stat-icon c2">⌁</span></div><strong id="cpu">—</strong><div class="meter"><i id="cpuBar"></i></div></article>
+      <article class="stat"><div class="stat-top"><span>Memoria RAM</span><span class="stat-icon c3">▤</span></div><strong id="ram">—</strong><div class="meter"><i id="ramBar"></i></div><small id="ramDetail">Esperando datos</small></article>
+      <article class="stat"><div class="stat-top"><span>GPU NVIDIA</span><span class="stat-icon c4">▧</span></div><strong id="gpu">—</strong><div class="meter"><i id="gpuBar"></i></div><small id="gpuDetail">Esperando datos</small></article>
     </section>
     <section id="services" class="section">
-      <div class="section-head"><div><h2>Servicios</h2><p>Estado real y controles de ejecución</p></div><span class="pill" id="lastUpdated">Actualizando…</span></div>
+      <div class="section-head"><div><h2>Servicios</h2><p>Estado real, controles e inicio automático</p></div><div class="head-actions"><button class="action" onclick="openCustom()">＋ Agregar IA</button><button class="action" onclick="redetect(this)">⟳ Detectar de nuevo</button><span class="pill" id="lastUpdated">Actualizando…</span></div></div>
+      <div id="notes"></div>
       <div class="service-grid" id="serviceGrid"></div>
+      <div id="missingWrap" class="missing-wrap" hidden>
+        <button class="missing-toggle" id="missingToggle" onclick="toggleMissing()" aria-expanded="false"></button>
+        <div id="missingBody" hidden>
+          <p class="hint">Estas IAs son compatibles pero no se encontraron. Si tenés alguna instalada en otro lugar, indicá su ruta. Para otra que no esté en la lista, usá "Agregar IA".</p>
+          <div class="missing-grid" id="missingGrid"></div>
+        </div>
+      </div>
     </section>
     <section id="models" class="section">
       <div class="section-head"><div><h2>Modelos en memoria</h2><p>Modelos actualmente cargados por Ollama</p></div></div>
@@ -33,9 +60,120 @@
       <div class="section-head"><div><h2>Recursos del sistema</h2><p>Lecturas actuales de CPU, RAM y GPU</p></div></div>
       <div class="resource-panel"><div class="resource-row"><span>Procesador</span><div class="wide-meter"><i id="cpuBar2"></i></div><b id="cpu2">—</b></div><div class="resource-row"><span>Memoria RAM</span><div class="wide-meter"><i id="ramBar2"></i></div><b id="ram2">—</b></div><div class="resource-row"><span>GPU</span><div class="wide-meter"><i id="gpuBar2"></i></div><b id="gpu2">—</b></div><div id="gpuError" class="hint"></div></div>
     </section>
-    <footer><span>AI Control Center</span><span>Actualización automática cada 5 segundos</span></footer>
+    <footer><span>AI Control Center v{{ version }} · Desarrollado por <a href="{{ developer.url }}" target="_blank" rel="noopener">{{ developer.name }}</a> · Licencia GPL-3.0{% if donate %} · <a href="#" onclick="openDonate();return false">♥ Donar</a>{% endif %}</span><span id="footerRefresh">Actualización automática cada 5 segundos</span></footer>
   </main>
 </div>
+
+<!-- Settings drawer -->
+<div class="overlay" id="settingsOverlay" hidden onclick="if(event.target===this)closeSettings()">
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="drawer-head"><h2 id="settingsTitle">Configuración</h2><button class="icon-btn" onclick="closeSettings()" aria-label="Cerrar">✕</button></div>
+    <div class="drawer-body">
+      <h3>Apariencia</h3>
+      <label class="field"><span>Tema</span>
+        <select id="setTheme"><option value="auto">Según el sistema</option><option value="light">Claro</option><option value="dark">Oscuro</option></select></label>
+      <div class="field"><span>Color de acento</span>
+        <div class="swatches" id="swatches"></div></div>
+      <label class="field"><span>Tamaño del texto <b id="fontSizeVal"></b></span><input type="range" id="setFontSize" min="12" max="20" step="1"></label>
+      <label class="field"><span>Bordes redondeados <b id="radiusVal"></b></span><input type="range" id="setRadius" min="0" max="28" step="1"></label>
+      <label class="field"><span>Densidad</span>
+        <select id="setDensity"><option value="compact">Compacta</option><option value="normal">Normal</option><option value="comfortable">Amplia</option></select></label>
+      <label class="field"><span>Columnas de servicios</span>
+        <select id="setColumns"><option value="auto">Automático</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
+      <label class="check"><input type="checkbox" id="setGradient"> Fondo con degradado</label>
+      <label class="check"><input type="checkbox" id="setAnimations"> Animaciones</label>
+      <h3>Comportamiento</h3>
+      <label class="field"><span>Actualizar cada</span>
+        <select id="setRefresh"><option value="2">2 segundos</option><option value="5">5 segundos</option><option value="10">10 segundos</option><option value="30">30 segundos</option><option value="60">1 minuto</option></select></label>
+      <label class="check"><input type="checkbox" id="setPanelAutostart"> Abrir este panel al iniciar sesión</label>
+      <label class="check"><input type="checkbox" id="setAutoUpdate"> Buscar actualizaciones de las IAs automáticamente</label>
+      <button class="action" onclick="checkUpdates(this)">Buscar actualizaciones ahora</button>
+      <h3>Acerca de</h3>
+      <div class="about"><img src="/static/icon.svg" alt="" width="44" height="44"><div><b>AI Control Center</b><small>Versión {{ version }} · Software libre bajo licencia GPL-3.0</small>
+        <small>Desarrollado por <a href="{{ developer.url }}" target="_blank" rel="noopener">{{ developer.name }}</a> · <a href="{{ developer.url }}" target="_blank" rel="noopener">www.devcibr.com</a></small></div></div>
+    </div>
+    <div class="drawer-foot"><button class="action" onclick="resetSettings()">Restablecer</button><button class="action primary" onclick="closeSettings()">Listo</button></div>
+  </aside>
+</div>
+
+<!-- Location dialog -->
+<div class="overlay center" id="locationOverlay" hidden onclick="if(event.target===this)closeModal('locationOverlay')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="locTitle">
+    <h2 id="locTitle">Indicar ubicación</h2>
+    <p class="hint" id="locHint"></p>
+    <div class="tabs" id="locTabs">
+      <button class="tab" data-loc-type="path">Ruta en el disco</button>
+      <button class="tab" data-loc-type="docker">Contenedor Docker</button>
+    </div>
+    <div id="locPath">
+      <label class="field"><span>Ruta</span><input id="locPathInput" list="locCandidates" placeholder="/home/usuario/ComfyUI" autocomplete="off"></label>
+      <datalist id="locCandidates"></datalist>
+      <label class="field" id="locPythonField"><span>Python (opcional)</span><input id="locPythonInput" placeholder="Se detecta solo: venv/bin/python"></label>
+      <label class="field"><span>Puerto (opcional)</span><input id="locPortInput" type="number" min="1" max="65535"></label>
+    </div>
+    <div id="locDocker">
+      <label class="field"><span>Contenedor</span><select id="locContainer"></select></label>
+    </div>
+    <div class="modal-foot"><button class="action" onclick="closeModal('locationOverlay')">Cancelar</button><button class="action primary" id="locSave">Guardar</button></div>
+  </div>
+</div>
+
+<!-- Custom AI dialog -->
+<div class="overlay center" id="customOverlay" hidden onclick="if(event.target===this)closeModal('customOverlay')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cuTitle">
+    <h2 id="cuTitle">Agregar una IA</h2>
+    <p class="hint">Para una IA que no está en la lista. El panel la va a poder iniciar, detener, actualizar (si es un repositorio git o un contenedor) e iniciarla con tu sesión.</p>
+    <label class="field"><span>Nombre</span><input id="cuLabel" maxlength="40" placeholder="Mi IA"></label>
+    <label class="field"><span>Descripción (opcional)</span><input id="cuDesc" maxlength="80" placeholder="Para qué la usás"></label>
+    <div class="tabs"><button class="tab" data-cu-type="path">Carpeta + comando</button><button class="tab" data-cu-type="docker">Contenedor Docker</button></div>
+    <div id="cuPath">
+      <label class="field"><span>Carpeta</span><input id="cuFolder" placeholder="/home/usuario/mi-ia"></label>
+      <label class="field"><span>Comando para iniciarla (se ejecuta dentro de la carpeta)</span><input id="cuCommand" placeholder="./venv/bin/python app.py --port 7870"></label>
+    </div>
+    <div id="cuDocker"><label class="field"><span>Contenedor</span><select id="cuContainer"></select></label></div>
+    <label class="field"><span>Puerto de la interfaz web (opcional)</span><input id="cuPort" type="number" min="1" max="65535"></label>
+    <div class="modal-foot"><button class="action" onclick="closeModal('customOverlay')">Cancelar</button><button class="action primary" id="cuSave">Agregar</button></div>
+  </div>
+</div>
+
+<!-- Uninstall dialog -->
+<div class="overlay center" id="uninstallOverlay" hidden onclick="if(event.target===this)closeModal('uninstallOverlay')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="unTitle">
+    <h2 id="unTitle">Desinstalar</h2>
+    <p class="warn">Esto borra archivos del sistema y no se puede deshacer. Revisá qué se va a quitar.</p>
+    <div id="unItems" class="un-items"></div>
+    <div id="unNotes" class="hint"></div>
+    <label class="field"><span>Para confirmar, escribí <b id="unName"></b></span><input id="unConfirm" autocomplete="off"></label>
+    <div id="unResults" class="un-results"></div>
+    <div class="modal-foot"><button class="action" onclick="closeModal('uninstallOverlay')">Cerrar</button><button class="action danger solid" id="unGo" disabled>Desinstalar</button></div>
+  </div>
+</div>
+
+<!-- Update dialog -->
+<div class="overlay center" id="updateOverlay" hidden onclick="if(event.target===this)closeModal('updateOverlay')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="upTitle">
+    <h2 id="upTitle">Actualizar</h2>
+    <div id="upInfo" class="up-info"></div>
+    <pre id="upLog" class="up-log" hidden></pre>
+    <div id="upResult"></div>
+    <div class="modal-foot"><button class="action" onclick="closeModal('updateOverlay')">Cerrar</button><button class="action primary" id="upGo" disabled>Actualizar ahora</button></div>
+  </div>
+</div>
+
+{% if donate %}
+<!-- Donate dialog -->
+<div class="overlay center" id="donateOverlay" hidden onclick="if(event.target===this)closeModal('donateOverlay')">
+  <div class="modal donate-modal" role="dialog" aria-modal="true" aria-labelledby="doTitle">
+    <h2 id="doTitle">♥ Apoyá el proyecto</h2>
+    <p class="muted">AI Control Center es gratis y libre. Si te sirve, podés invitarme un café con Binance Pay: abrí la app de Binance, tocá Pagar y escaneá el código.</p>
+    <img class="donate-qr" src="/static/{{ donate.qr }}" alt="Código QR de Binance Pay">
+    {% if donate.binance_id %}<p class="donate-id">Binance Pay ID: <b id="doId">{{ donate.binance_id }}</b> <button class="action" onclick="copyText('{{ donate.binance_id }}')">Copiar</button></p>{% endif %}
+    <p class="muted small">¡Gracias! / Thank you for supporting AI Control Center.</p>
+    <div class="modal-foot"><button class="action primary" onclick="closeModal('donateOverlay')">Cerrar</button></div>
+  </div>
+</div>
+{% endif %}
+
 <div id="toast" class="toast" role="status"></div>
-<script src="/static/app.js"></script>
+<script src="/static/app.js?v={{ version }}"></script>
 </body></html>

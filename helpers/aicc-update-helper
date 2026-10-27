@@ -1,0 +1,44 @@
+#!/usr/bin/python3
+"""Root helper run through pkexec (asks for the admin password) to update Ollama.
+
+Runs the official installer (https://ollama.com/install.sh), which is how Ollama
+documents updating on Linux, then puts back whether the service was enabled at
+login and whether it was running, since the installer enables and starts it.
+
+Usage: aicc-update-helper ollama
+"""
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+import urllib.request
+
+INSTALLER = "https://ollama.com/install.sh"
+UNIT = "ollama.service"
+
+
+def main():
+    if sys.argv[1:] != ["ollama"]:
+        print("uso: aicc-update-helper ollama", file=sys.stderr)
+        return 2
+    systemctl = shutil.which("systemctl") or "/bin/systemctl"
+    was_enabled = subprocess.run([systemctl, "is-enabled", UNIT], capture_output=True, text=True).stdout.strip() == "enabled"
+    was_active = subprocess.run([systemctl, "is-active", UNIT], capture_output=True, text=True).stdout.strip() == "active"
+    fd, path = tempfile.mkstemp(suffix=".sh")
+    try:
+        print("Descargando " + INSTALLER, flush=True)
+        with urllib.request.urlopen(INSTALLER, timeout=60) as r, os.fdopen(fd, "wb") as f:
+            f.write(r.read())
+        rc = subprocess.call(["sh", path])
+    finally:
+        os.remove(path)
+    if not was_enabled:
+        subprocess.call([systemctl, "disable", UNIT])
+    if not was_active:
+        subprocess.call([systemctl, "stop", UNIT])
+    return rc
+
+
+if __name__ == "__main__":
+    sys.exit(main())

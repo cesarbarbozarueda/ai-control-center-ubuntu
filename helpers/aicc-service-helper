@@ -1,0 +1,24 @@
+#!/usr/bin/python3
+"""Root helper run through pkexec: start/stop/enable/disable allowlisted system units.
+
+Installed by the .deb with a polkit policy that allows it without a password for
+the user sitting at the computer. It accepts nothing but the fixed values below.
+"""
+import shutil
+import subprocess
+import sys
+
+ALLOWED_UNITS = {"ollama.service"}
+ACTIONS = {"start", "stop", "restart", "enable", "disable"}
+
+
+def main():
+    if len(sys.argv) != 3 or sys.argv[1] not in ACTIONS or sys.argv[2] not in ALLOWED_UNITS:
+        print("uso: aicc-service-helper start|stop|restart|enable|disable ollama.service", file=sys.stderr)
+        return 2
+    systemctl = shutil.which("systemctl") or "/bin/systemctl"
+    return subprocess.call([systemctl, sys.argv[1], sys.argv[2]])
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,76 @@
+name: ai-control-center
+title: AI Control Center
+base: core22
+version: '2.0.0'
+summary: Administrá tus IAs locales / Manage your local AI tools
+description: |
+  AI Control Center es un panel de escritorio para administrar tus herramientas de
+  inteligencia artificial locales en Ubuntu: Ollama, Open WebUI, Immich, ComfyUI,
+  LM Studio, Jan, GPT4All, LocalAI, Stable Diffusion WebUI, n8n y más.
+
+  - Detecta automáticamente dónde está instalada cada IA, o te deja indicar la ruta a mano.
+  - Iniciá, detené y reiniciá cada servicio con un clic.
+  - Actualizá cada IA con un botón y recibí un aviso cuando hay una versión nueva.
+  - Agregá cualquier otra IA local con su carpeta y comando o su contenedor Docker.
+  - Elegí qué IAs se inician solas al iniciar sesión.
+  - Desinstalá una IA por completo, eligiendo si también borrás modelos y datos.
+  - Mirá el uso de CPU, RAM y GPU NVIDIA, global y por servicio.
+  - Tema claro u oscuro y apariencia personalizable.
+
+  Todo funciona en tu equipo: el panel solo escucha en 127.0.0.1.
+  Desarrollado por devcibr: https://www.devcibr.com
+
+  ---
+
+  AI Control Center is a desktop panel to manage your local artificial intelligence
+  tools on Ubuntu: Ollama, Open WebUI, Immich, ComfyUI, LM Studio, Jan, GPT4All,
+  LocalAI, Stable Diffusion WebUI, n8n and more.
+
+  - Automatically finds where each AI tool is installed, or lets you set the path by hand.
+  - Start, stop and restart each service with one click.
+  - Update each AI tool with one button and get notified when a new version is out.
+  - Add any other local AI tool with its folder and command or its Docker container.
+  - Choose which AI tools start automatically when you log in.
+  - Fully uninstall an AI tool, choosing whether to also delete models and data.
+  - See CPU, RAM and NVIDIA GPU usage, overall and per service.
+  - Light or dark theme and a customizable look.
+
+  Everything runs on your computer: the panel only listens on 127.0.0.1.
+  Developed by devcibr: https://www.devcibr.com
+website: https://www.devcibr.com
+contact: https://www.devcibr.com
+source-code: https://github.com/cesarbarbozarueda/ai-control-center-ubuntu
+issues: https://github.com/cesarbarbozarueda/ai-control-center-ubuntu/issues
+license: GPL-3.0-or-later
+icon: snap/gui/ai-control-center.png
+grade: stable
+# The panel controls systemd services, Docker and folders anywhere in your home,
+# which strict confinement does not allow. Classic needs Canonical's approval
+# (see docs/PUBLICAR.md).
+confinement: classic
+
+apps:
+  ai-control-center:
+    command: usr/lib/ai-control-center/snap-launcher
+    desktop: meta/gui/ai-control-center.desktop
+
+parts:
+  python-deps:
+    plugin: python
+    source: .
+    python-requirements: [requirements.txt]
+    build-attributes: [enable-patchelf]
+    stage-packages: [libpython3.10-minimal, libpython3.10-stdlib, python3.10-minimal, python3.10-venv]
+
+  app:
+    plugin: dump
+    source: .
+    organize:
+      app.py: usr/lib/ai-control-center/app.py
+      aicc: usr/lib/ai-control-center/aicc
+      templates: usr/lib/ai-control-center/templates
+      static: usr/lib/ai-control-center/static
+      helpers: usr/lib/ai-control-center/helpers
+      packaging/snap-launcher: usr/lib/ai-control-center/snap-launcher
+    stage:
+      - usr/lib/ai-control-center

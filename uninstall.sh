@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
+# Remove the AI Control Center app. Your AI tools, models and data are not touched.
 set -euo pipefail
-systemctl --user disable --now ai-control-center.service 2>/dev/null || true
-systemctl --user disable --now ai-comfyui.service 2>/dev/null || true
-rm -f "$HOME/.config/systemd/user/ai-control-center.service" "$HOME/.config/systemd/user/ai-comfyui.service"
-systemctl --user daemon-reload
+pkill -f "/usr/lib/ai-control-center/app.py --server" 2>/dev/null || true
 rm -f "$HOME/.config/autostart/ai-control-center.desktop"
-echo "Servicios del panel deshabilitados. Los archivos del proyecto, modelos, contenedores y datos no se borraron."
-echo "Si también querés quitar el código, borrá manualmente ~/.local/share/ai-control-center."
-echo "Para quitar los permisos de Ollama: sudo rm -f /etc/sudoers.d/ai-control-center"
+sudo apt-get remove -y ai-control-center
+echo "AI Control Center desinstalado."
+echo "Tu configuración sigue en ~/.config/ai-control-center (borrala si no la querés)."
+echo "Los servicios de usuario creados para tus IAs (~/.config/systemd/user/ai-*.service) se mantienen."
