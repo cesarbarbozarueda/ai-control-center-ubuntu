@@ -13,7 +13,7 @@ Hay dos paquetes:
 Las imágenes para las tiendas están en `packaging/store/`:
 
 - `icon-512.png`: ícono (también `icon-256.png` y `icon-128.png`).
-- `banner-1218x404.png`: banner de la ficha de la Snap Store.
+- `banner-1218x406.png`: banner de la ficha de la Snap Store.
 - `screenshot-0` a `screenshot-4`: capturas de 1366×768.
 
 ---
@@ -133,7 +133,7 @@ En https://snapcraft.io/ai-control-center/listing:
 
 - **Icono**: `packaging/store/icon-512.png`
 - **Capturas** (hasta 5): `packaging/store/screenshot-*.png`
-- **Banner**: `packaging/store/banner-1218x404.png`
+- **Banner**: `packaging/store/banner-1218x406.png`
 - **Título, resumen y descripción**: se toman de `snap/snapcraft.yaml` (español primero y abajo inglés).
 - **Sitio web y contacto**: https://www.devcibr.com
 - **Categorías**: Utilities y Development

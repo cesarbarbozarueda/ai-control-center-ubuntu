@@ -65,6 +65,10 @@ parts:
   app:
     plugin: dump
     source: .
+    # Files copied from another machine can arrive as 0600; the snap needs them world-readable.
+    override-build: |
+      craftctl default
+      chmod -R a+rX "$CRAFT_PART_INSTALL"
     organize:
       app.py: usr/lib/ai-control-center/app.py
       aicc: usr/lib/ai-control-center/aicc
