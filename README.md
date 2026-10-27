@@ -1,5 +1,7 @@
 # AI Control Center para Ubuntu
 
+🇪🇸 **Español** · [🇬🇧 English](README.en.md)
+
 Panel local para administrar y actualizar tus IAs locales. Reconoce 19 (Ollama, Open WebUI, Immich, ComfyUI, LM Studio, Jan, GPT4All, LocalAI, AnythingLLM, Stable Diffusion WebUI y Forge, Fooocus, InvokeAI, text-generation-webui, SillyTavern, n8n, Flowise, LibreChat y Dify) y podés agregar cualquier otra. Se instala como paquete `.deb` o snap, aparece en el menú de aplicaciones y se abre en su propia ventana (con `ai-control-center --browser`, en el navegador, en `http://127.0.0.1:8765`).
 
 Desarrollado por [devcibr](https://www.devcibr.com).
@@ -16,6 +18,11 @@ Desarrollado por [devcibr](https://www.devcibr.com).
 | **Actualizar** con un clic, viendo la versión instalada y la nueva | **Agregar IA** que no está en la lista |
 | ![Panel de configuración visual](docs/capturas/06-configuracion.png) | ![Ventana de donaciones con QR de Binance Pay](docs/capturas/07-donar.png) |
 | **Configuración** de colores, tamaño, densidad y más | **Donar** con Binance Pay |
+
+## Descargar
+
+- **.deb:** bajalo de [Releases](https://github.com/cesarbarbozarueda/ai-control-center-ubuntu/releases/latest) e instalalo con doble clic o con `sudo apt install ./ai-control-center_2.0.0_all.deb`.
+- **App Center (snap):** próximamente.
 
 ## Funciones
 
